@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using Google.Apis.Auth;
+using System.Net.Http.Headers;
 
 namespace RecipeApp.API.Services
 {
@@ -89,6 +90,26 @@ namespace RecipeApp.API.Services
             };
         }
 
+        public async Task DeleteClerkUserAsync(string clerkUserId)
+        {
+            var clerkSecretKey = "sk_test_QqvhQWSBBxurOezXAPp9rnaDccTJL5834lPRXDe7a1"; // Заміни на твій Clerk Secret Key!
+            using (var client = new HttpClient())
+            {
+                client.DefaultRequestHeaders.Authorization =
+                    new AuthenticationHeaderValue("Bearer", clerkSecretKey);
+
+                var url = $"https://api.clerk.com/v1/users/{clerkUserId}";
+                var response = await client.DeleteAsync(url);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    // опціонально: логувати помилку
+                    var error = await response.Content.ReadAsStringAsync();
+                    Console.WriteLine($"Clerk deletion error: {error}");
+                }
+            }
+        }
+
         public async Task<AuthResponseDto> GoogleLoginWithClerkAsync(string clerkToken)
         {
             try
@@ -141,7 +162,10 @@ namespace RecipeApp.API.Services
                 }
 
                 await _context.SaveChangesAsync();
-
+                if (!string.IsNullOrEmpty(clerkId))
+                {
+                    await DeleteClerkUserAsync(clerkId);
+                }
                 var token = GenerateJwtToken(user);
                 return new AuthResponseDto
                 {
@@ -154,6 +178,7 @@ namespace RecipeApp.API.Services
                         Role = user.Role
                     }
                 };
+                
             }
             catch (Exception ex)
             {
