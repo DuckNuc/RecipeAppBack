@@ -14,7 +14,13 @@ namespace RecipeApp.API.Models
         public string Title { get; set; }
         
         public string? Description { get; set; }
-        
+
+        [Range(1, 1440, ErrorMessage = "Cooking time must be between 1 and 1440 minutes")]
+        public int CookingTime { get; set; } = 30;
+
+        [Range(1, 100, ErrorMessage = "Servings must be between 1 and 100")]
+        public int Servings { get; set; } = 2;
+
         [StringLength(500)]
         public string? ImageUrl { get; set; }
         

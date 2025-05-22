@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace RecipeApp.API.DTOs
 {
     public class RecipeDto
@@ -18,6 +20,9 @@ namespace RecipeApp.API.DTOs
         public double TotalCarbs { get; set; }
         public List<RecipeProductDto> Ingredients { get; set; }
         public bool IsSaved { get; set; }
+
+        public int CookingTime { get; set; }
+        public int Servings { get; set; }
     }
 
     public class RecipeCreateDto
@@ -28,6 +33,12 @@ namespace RecipeApp.API.DTOs
         public string VideoUrl { get; set; }
         public int CategoryId { get; set; }
         public List<RecipeProductCreateDto> Ingredients { get; set; }
+
+        [Range(1, 1440, ErrorMessage = "Cooking time must be between 1 and 1440 minutes")]
+        public int CookingTime { get; set; } = 30;
+
+        [Range(1, 100, ErrorMessage = "Servings must be between 1 and 100")]
+        public int Servings { get; set; } = 2;
     }
 
     public class RecipeUpdateDto
@@ -38,6 +49,12 @@ namespace RecipeApp.API.DTOs
         public string VideoUrl { get; set; }
         public int CategoryId { get; set; }
         public List<RecipeProductCreateDto> Ingredients { get; set; }
+
+        [Range(1, 1440, ErrorMessage = "Cooking time must be between 1 and 1440 minutes")]
+        public int CookingTime { get; set; } = 30;
+
+        [Range(1, 100, ErrorMessage = "Servings must be between 1 and 100")]
+        public int Servings { get; set; } = 2;
     }
 
     public class RecipeProductDto

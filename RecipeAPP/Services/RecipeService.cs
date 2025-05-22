@@ -93,6 +93,8 @@ namespace RecipeApp.API.Services
 
         public async Task<RecipeDto> CreateRecipeAsync(RecipeCreateDto recipeDto, int userId)
         {
+            var cookingTime = recipeDto.CookingTime > 0 ? recipeDto.CookingTime : 30;
+            var servings = recipeDto.Servings > 0 ? recipeDto.Servings : 2;
             var recipe = new Recipe
             {
                 Title = recipeDto.Title,
@@ -102,6 +104,9 @@ namespace RecipeApp.API.Services
                 CategoryId = recipeDto.CategoryId,
                 UserId = userId,
                 CreatedAt = DateTime.Now,
+                CookingTime = cookingTime,
+                Servings = servings,
+
                 RecipeProducts = recipeDto.Ingredients.Select(i => new RecipeProduct
                 {
                     ProductId = i.ProductId,
@@ -147,6 +152,9 @@ namespace RecipeApp.API.Services
             recipe.ImageUrl = recipeDto.ImageUrl;
             recipe.VideoUrl = recipeDto.VideoUrl;
             recipe.CategoryId = recipeDto.CategoryId;
+            recipe.CookingTime = recipeDto.CookingTime > 0 ? recipeDto.CookingTime : recipe.CookingTime;
+            recipe.Servings = recipeDto.Servings > 0 ? recipeDto.Servings : recipe.Servings;
+
 
             // Remove existing recipe products
             _context.RecipeProducts.RemoveRange(recipe.RecipeProducts);
@@ -345,7 +353,9 @@ namespace RecipeApp.API.Services
                 TotalFats = totalFats,
                 TotalCarbs = totalCarbs,
                 Ingredients = ingredients,
-                IsSaved = isSaved
+                IsSaved = isSaved,
+                 CookingTime = recipe.CookingTime, // NEW
+                Servings = recipe.Servings        // NEW
             };
         }
     }

@@ -81,6 +81,8 @@ builder.Services.AddScoped<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICalorieCalculationService, CalorieCalculationService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IShoppingListService, ShoppingListService>();
+
 
 // Add CORS
 builder.Services.AddCors(options =>
